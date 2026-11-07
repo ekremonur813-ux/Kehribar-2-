@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="tr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kehribar</title>
+<meta name="theme-color" content="#FBF1DE">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<!-- Giriş / kilit -->
+<main id="login" class="login" hidden>
+  <div class="login-col">
+    <div class="orb mark" aria-hidden="true"></div>
+    <h1>Kehribar</h1>
+    <p class="lede" id="loginLede">Notların, sohbetlerin ve takip ettiklerin burada seni bekliyor.</p>
+    <form id="loginForm">
+      <label class="field" id="nameField">Adın
+        <input name="username" autocomplete="username" autocapitalize="words" spellcheck="false">
+      </label>
+      <label class="field">Parola
+        <input name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <p class="error" id="loginError" role="alert"></p>
+      <button class="btn primary" type="submit" id="loginBtn">Aç</button>
+    </form>
+  </div>
+</main>
+
+<!-- Uygulama -->
+<div id="shell" hidden>
+  <header class="top">
+    <button class="icon-btn" id="openDrawer" aria-label="Sohbet geçmişi">
+      <svg viewBox="0 0 24 24" width="22" height="22" class="ic"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+    </button>
+    <h2 class="top-title" id="topTitle">Kehribar</h2>
+    <button class="icon-btn" id="newChat" aria-label="Ana ekran / yeni sohbet">
+      <svg viewBox="0 0 24 24" width="22" height="22" class="ic"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </header>
+
+  <section id="view-chat" class="view chat">
+    <div id="messages" class="messages" aria-live="polite"></div>
+    <form id="composer" class="composer">
+      <textarea id="input" rows="1" maxlength="4000" placeholder="Bir şey yaz ya da söyle…" aria-label="Mesaj"></textarea>
+      <button type="button" class="orb-btn" id="voiceBtn" aria-label="Sesli konuşmayı başlat">
+        <svg viewBox="0 0 24 24" width="22" height="22" class="ic"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
+      <button type="submit" class="send" id="sendBtn" aria-label="Gönder">
+        <svg viewBox="0 0 24 24" width="22" height="22" class="ic"><path d="M4 12l16-8-6 16-3-7-7-1z"/></svg>
+      </button>
+    </form>
+  </section>
+
+  <section id="view-notes" class="view" hidden>
+    <div class="view-head">
+      <p class="muted">Yazdıkların burada kalır. İstersen her gün hatırlatırım ya da güncel durumunu takip ederim.</p>
+      <button class="btn primary" id="newNote">Yeni not</button>
+    </div>
+    <ul id="notesList" class="plain-list"></ul>
+  </section>
+
+  <section id="view-inbox" class="view" hidden>
+    <div class="view-head">
+      <p class="muted">Kehribar'ın kendiliğinden gönderdiği özetler ve takip sonuçları.</p>
+      <button class="btn quiet" id="clearInbox">Tümünü temizle</button>
+    </div>
+    <ul id="inboxList" class="plain-list"></ul>
+  </section>
+
+  <section id="view-settings" class="view" hidden>
+    <div id="settingsBody"></div>
+  </section>
+
+  <nav class="tabs" aria-label="Ana menü">
+    <button class="tab" data-view="chat" aria-current="page">
+      <svg viewBox="0 0 24 24" width="22" height="22" class="ic"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg>
+      Ana ekran
+    </button>
+    <button class="tab" data-view="notes">
+      <svg viewBox="0 0 24 24" width="22" height="22" class="ic"><path d="M6 4h9l3 3v13H6zM9 11h6M9 15h6"/></svg>
+      Notlar
+    </button>
+    <button class="tab" data-view="inbox">
+      <svg viewBox="0 0 24 24" width="22" height="22" class="ic"><path d="M4 13l2-7h12l2 7v5H4zM4 13h5l1 2h4l1-2h5"/></svg>
+      Gelenler
+      <span class="badge" id="inboxBadge" hidden>0</span>
+    </button>
+    <button class="tab" data-view="settings">
+      <svg viewBox="0 0 24 24" width="22" height="22" class="ic"><path d="M5 7h9M18 7h1M5 17h1M10 17h9"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+      Ayarlar
+    </button>
+  </nav>
+</div>
+
+<!-- Sohbet geçmişi -->
+<div id="scrim" class="scrim" hidden></div>
+<aside id="drawer" class="drawer" inert aria-label="Sohbet geçmişi">
+  <div class="drawer-head">
+    <h2>Sohbetler</h2>
+    <button class="icon-btn" id="closeDrawer" aria-label="Kapat">
+      <svg viewBox="0 0 24 24" width="22" height="22" class="ic"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <ul id="convList" class="plain-list drawer-list"></ul>
+  <div class="drawer-foot">
+    <button class="btn danger-quiet" id="deleteAllConvs">Tüm sohbetleri sil</button>
+  </div>
+</aside>
+
+<!-- Sesli konuşma -->
+<div id="voice" class="voice" data-state="idle" hidden>
+  <button class="icon-btn voice-close" id="voiceClose" aria-label="Sesli konuşmayı bitir">
+    <svg viewBox="0 0 24 24" width="24" height="24" class="ic"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <button class="orb big-orb" id="voiceOrb" aria-label="Konuşmak için dokun"></button>
+  <p class="voice-status" id="voiceStatus" role="status">Dokun ve konuş</p>
+  <p class="voice-text" id="voiceText"></p>
+</div>
+
+<!-- Not düzenleyici -->
+<dialog id="noteDialog" aria-labelledby="noteDialogTitle">
+  <form id="noteForm" class="sheet">
+    <h2 id="noteDialogTitle">Not</h2>
+    <label class="field">Başlık
+      <input name="ntitle" maxlength="120" placeholder="Örn. Pasaport randevusu">
+    </label>
+    <label class="field">Ayrıntı
+      <textarea name="nbody" rows="5" maxlength="4000" placeholder="Aklında ne var?"></textarea>
+    </label>
+    <label class="row"><span>Her gün hatırlat</span><input type="checkbox" role="switch" class="switch" name="ndaily"></label>
+    <label class="row"><span>Güncel durumunu takip et</span><input type="checkbox" role="switch" class="switch" name="nwatch"></label>
+    <div id="noteStatus" class="status" hidden></div>
+    <div class="sheet-actions">
+      <button class="btn primary" type="submit">Kaydet</button>
+      <button class="btn" type="button" id="noteCheck" hidden>Şimdi kontrol et</button>
+      <button class="btn danger-quiet" type="button" id="noteDelete" hidden>Sil</button>
+      <button class="btn quiet" type="button" id="noteCancel">Vazgeç</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Onay penceresi (tarayıcının confirm/prompt'u yerine) -->
+<dialog id="askDialog" aria-labelledby="askText">
+  <form method="dialog" class="sheet">
+    <p id="askText" class="ask-text"></p>
+    <input id="askInput" type="password" autocomplete="off" hidden>
+    <div class="sheet-actions">
+      <button class="btn primary" id="askOk" value="ok">Tamam</button>
+      <button class="btn quiet" value="cancel" formnovalidate>Vazgeç</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status"></div>
+<script src="backend.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
